@@ -50,7 +50,6 @@ class ParseQuery<T>
 	}
 	
 	public function initParseException(e : Dynamic) {
-		trace("init parse exception " + e);
 		if (e == null) mParseAnswerException = null;
 		else mParseAnswerException = new ParseException(e);
 	}
