@@ -60,9 +60,4 @@ public class ParseWrapper extends Extension {
 		return num;
 	}
 	
-	public static ParseQuery<ParseObject> getObjectQuery(String className){
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(className);
-		return query;
-	}
-	
 }

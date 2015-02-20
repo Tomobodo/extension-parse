@@ -6,10 +6,12 @@ package fr.tbaudon.parse;
  */
 class ParseException 
 {
+	
+	var mJavaInstance : Dynamic;
 
-	public function new() 
+	public function new(e : Dynamic = null) 
 	{
-		
+		mJavaInstance = e;
 	}
 	
 }
