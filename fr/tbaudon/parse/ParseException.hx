@@ -2,16 +2,16 @@ package fr.tbaudon.parse;
 
 /**
  * ...
- * @author Thomas B
+ * @author TBaudon
  */
-class ParseException 
+class ParseException
 {
 	
-	var mJavaInstance : Dynamic;
+	var mMessage : String;
 
-	public function new(e : Dynamic = null) 
+	public function new(message : String) 
 	{
-		mJavaInstance = e;
+		mMessage = message;
 	}
 	
 }

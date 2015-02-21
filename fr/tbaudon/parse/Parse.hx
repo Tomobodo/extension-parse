@@ -1,54 +1,33 @@
 package fr.tbaudon.parse ;
 
-#if cpp
-import cpp.Lib;
-#elseif neko
-import neko.Lib;
-#end
-
-#if (android && openfl)
-import openfl.utils.JNI;
-#end
-
-import haxe.Json;
-
 class Parse {
 	
-	public static function initialize(applicationId : String, clientKey : String) {
-		native_initialize(applicationId, clientKey);
+	public static var applicationId(get, null) : String = "";
+	public static var RESTApiKey(get, null) : String = "";
+	
+	static inline var API_VERSION : Int = 1;
+	static inline var PARSE_REST_API : String = "https://api.parse.com";
+	
+	public static function init(applicationId : String) {
+		Parse.applicationId = applicationId;
 	}
 	
-	public static function toJavaObject(object : Dynamic) : Dynamic {
-		if (Std.is(object, String))
-		{
-			var input : String = object;
-			return input;
-		}
-		else if (Std.is(object, Int))
-		{
-			var input : Int = object;
-			return fromIntTojavaNumber(input);
-		}
-		else if (Std.is(object, Float))
-		{
-			var input : Float = object;
-			return fromFloatTojavaNumber(input);
-		}
-		else{
-			var input : String = Json.stringify(object);
-			return input;
-		}
+	public static function initDataApi(RESTApiKey : String) {
+		Parse.RESTApiKey = RESTApiKey;
 	}
 	
-	#if android
+	public static function getApiUrl() : String {
+		return PARSE_REST_API + "/" + API_VERSION ;
+	}
 	
-	private static var native_initialize : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "initialize", "(Ljava/lang/String;Ljava/lang/String;)V");
+	static function get_applicationId():String 
+	{
+		return applicationId;
+	}
 	
-	private static var toJavaString : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "toJavaString", "(Ljava/lang/String;)Ljava/lang/String;");
-	private static var fromIntTojavaNumber : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "fromIntTojavaNumber", "(I)Ljava/lang/Number;");
-	private static var fromFloatTojavaNumber : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "fromFloatTojavaNumber", "(F)Ljava/lang/Number;");
-	
-	#end
-	
+	static function get_RESTApiKey():String 
+	{
+		return RESTApiKey;
+	}
 	
 }

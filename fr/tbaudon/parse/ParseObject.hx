@@ -1,93 +1,112 @@
-package fr.tbaudon.parse ;
-
-import openfl.utils.JNI;
+package fr.tbaudon.parse;
+import cpp.vm.Thread;
+import haxe.Http;
+import haxe.io.BytesOutput;
+import haxe.io.Output;
+import haxe.Json;
+import openfl.net.URLRequest;
+import openfl.net.URLRequestMethod;
 
 /**
  * ...
- * @author Thomas B
+ * @author TBaudon
  */
 class ParseObject
 {
 	
-	var mName : String;
-	var mNativeInstance : Dynamic;
-
-	public function new(name : String, instance : Dynamic = null) 
+	var mClassName : String;
+	var mUrl : String;
+	
+	var mHttp : Http;
+	
+	var mData : Map<String, Dynamic>;
+	var mUpdatedFields : Array<String>;
+	var mId : String;
+	
+	var mSaveCallback : Void -> Void;
+	
+	public function new(className : String) 
 	{
-		mName = name;
-		if(instance == null)
-			mNativeInstance = native_createParseObject(mName);
+		mClassName = className;
+		
+		mUrl = Parse.getApiUrl() + "/classes/" + mClassName;
+		
+		mData = new Map<String, Dynamic>();
+		mUpdatedFields = new Array<String>();		
+		
+		mHttp = new Http(mUrl);
+		mHttp.setHeader("X-Parse-Application-Id", Parse.applicationId);
+		mHttp.setHeader("X-Parse-REST-API-Key", Parse.RESTApiKey);
+		mHttp.setHeader("Content-Type", "application/json");
+	}
+	
+	public function put(key : String, value : Dynamic) {
+		mData.set(key, value);
+		mUpdatedFields.push(key);
+	}
+	
+	function getJson() : String {
+		var json = { };
+		
+		for(field in mUpdatedFields) 
+			Reflect.setField(json, field, mData.get(field));
+		
+		return Json.stringify(json);
+	}
+	
+	function emptyUpdate() {
+		while (mUpdatedFields.length > 0)
+			mUpdatedFields.pop();
+	}
+	
+	public function save() {
+		mHttp.url = mUrl;
+		mHttp.setPostData(getJson());
+		
+		if (mId != null) {
+			var output = new BytesOutput();
+			mHttp.url = mUrl + "/" + mId;
+			try {
+				mHttp.customRequest(true, output, "PUT");
+			}catch (e : Dynamic) {
+				trace(e);
+			}
+		}
 		else
-			mNativeInstance = instance;
-	}
-	
-	public function put(key : String, value : Dynamic) 
-	{
-		#if android
+			mHttp.request(true);
+		
+		var answerData : String = mHttp.responseData;
+		if (mHttp.responseHeaders.get("Status") != null) 
+			throw new ParseException("Error : " + mHttp.responseHeaders.get("Status"));
+		else {
+			var parsedAnswer = Json.parse(answerData);
 			
-			JNI.callMember(parseObject_put, mNativeInstance, [key, Parse.toJavaObject(value)]);
-		
-		#end
+			if (Reflect.hasField(parsedAnswer, "error"))
+				throw new ParseException(Reflect.field(parsedAnswer, "error"));
+			else {
+				mId = Reflect.field(parsedAnswer, "objectId");
+				emptyUpdate();
+			}
+		}
 	}
 	
-	public function get(key : String) : Dynamic {
-		
-		#if android
-		
-			return JNI.callMember(parseObject_get, mNativeInstance, [key]);
-			
-		#end		
+	function saveThread() {
+		save();
+		if (mSaveCallback != null)
+			mSaveCallback ();
 	}
 	
-	public function getInt(key : String) : Int {
-		
-		#if android 
-		
-			return JNI.callMember(parseObject_getInt, mNativeInstance, [key]);
-		
-		#end
-		
+	public function saveInBackground(saveCallback : Void -> Void = null) {
+		mSaveCallback = saveCallback;
+		Thread.create(saveThread);
 	}
 	
-	public function getFloat(key : String) : Float {
-		
-		#if android
-		
-		return JNI.callMember(parseObject_getFloat, mNativeInstance, [key]);
-		
-		#end
-		
+	public function getObjectId() : String {
+		return mId;
 	}
 	
-	public function getString(key : String) : String {
-		
-		#if android 
-		
-		return JNI.callMember(parseObject_getString, mNativeInstance, [key]);
-		
-		#end
-		
+	public function setObjectId(obejctId : String) {
+		mId = obejctId;
 	}
 	
-	public function saveInBackground() 
-	{
-		#if android
-			JNI.callMember(parseObject_saveInBackground, mNativeInstance, []);
-		#end
-	}
-	
-	#if android
-	
-	private static var native_createParseObject : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "createParseObject", "(Ljava/lang/String;)Lcom/parse/ParseObject;");
-	
-	private static var parseObject_put : Dynamic = JNI.createMemberMethod("com.parse.ParseObject", "put", "(Ljava/lang/String;Ljava/lang/Object;)V");
-	
-	private static var parseObject_get : Dynamic = JNI.createMemberMethod("com.parse.ParseObject", "get", "(Ljava/lang/String;)Ljava/lang/Object;");
-	private static var parseObject_getInt : Dynamic = JNI.createMemberMethod("com.parse.ParseObject", "getInt", "(Ljava/lang/String;)I");
-	private static var parseObject_getFloat : Dynamic = JNI.createMemberMethod("com.parse.ParseObject", "getDouble", "(Ljava/lang/String;)D");
-	private static var parseObject_getString : Dynamic = JNI.createMemberMethod("com.parse.ParseObject", "getString", "(Ljava/lang/String;)Ljava/lang/String;");
-	
-	private static var parseObject_saveInBackground = JNI.createMemberMethod("com.parse.ParseObject", "saveInBackground", "()Lbolts/Task;");
-	
-	#end
 }

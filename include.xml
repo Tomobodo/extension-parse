@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<ndll name="parse" unless="android" />
-	
+	<haxelib name="hxssl" />
+
 	<!-- Use the following for an Android Java extension, not needed otherwise -->
 	
 	<dependency name="parse" path="dependencies/android" if="android" />
