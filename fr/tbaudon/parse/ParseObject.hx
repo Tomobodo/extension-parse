@@ -1,11 +1,15 @@
 package fr.tbaudon.parse;
-import cpp.vm.Thread;
-import haxe.Http;
-import haxe.io.BytesOutput;
-import haxe.io.Output;
+
 import haxe.Json;
+import openfl.events.ErrorEvent;
+import openfl.events.Event;
+import openfl.events.HTTPStatusEvent;
+import openfl.events.IOErrorEvent;
+
 import openfl.net.URLRequest;
 import openfl.net.URLRequestMethod;
+import openfl.net.URLRequestHeader;
+import openfl.net.URLLoader;
 
 /**
  * ...
@@ -17,13 +21,17 @@ class ParseObject
 	var mClassName : String;
 	var mUrl : String;
 	
-	var mHttp : Http;
+	var mRequest : URLRequest;
+	var mUrlLoader : URLLoader;
 	
 	var mData : Map<String, Dynamic>;
 	var mUpdatedFields : Array<String>;
 	var mId : String;
 	
-	var mSaveCallback : Void -> Void;
+	var mRequestSuccess : Bool = false;
+	
+	var mOnSuccesCallback : Void->Void;
+	var mOnFailCallback : Void->Void;
 	
 	public function new(className : String) 
 	{
@@ -34,15 +42,60 @@ class ParseObject
 		mData = new Map<String, Dynamic>();
 		mUpdatedFields = new Array<String>();		
 		
-		mHttp = new Http(mUrl);
-		mHttp.setHeader("X-Parse-Application-Id", Parse.applicationId);
-		mHttp.setHeader("X-Parse-REST-API-Key", Parse.RESTApiKey);
-		mHttp.setHeader("Content-Type", "application/json");
+		mRequest = new URLRequest(mUrl);
+		var appId = new URLRequestHeader("X-Parse-Application-Id", Parse.applicationId);
+		var appApiKey = new URLRequestHeader("X-Parse-REST-API-Key", Parse.RESTApiKey);
+		mRequest.requestHeaders = [appId, appApiKey];
+		mRequest.contentType = "application/json";
+		
+		mUrlLoader = new URLLoader();
+		
+		mUrlLoader.addEventListener(Event.COMPLETE, onRequestComplete);
+		mUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, onRequestError);
+		mUrlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
+	}
+	
+	private function onHttpStatus(e:HTTPStatusEvent):Void 
+	{
+		var status = e.status;
+		if (status >= 200 && status <= 205)
+			mRequestSuccess = true;
+		trace(e.status);
+	}
+	
+	function onRequestError(e:ErrorEvent):Void 
+	{
+		trace("error");
+		if (mOnFailCallback != null)
+			mOnFailCallback();
+	}
+	
+	function onRequestComplete(e:Event):Void 
+	{
+		var answerData = mUrlLoader.data;
+		if (mRequestSuccess) {
+			
+			try {
+				var data = Json.parse(answerData);
+				if(Reflect.hasField(data, "objectId"))
+					mId = Reflect.field(data, "objectId");
+			}catch (e : Dynamic) {
+				trace(e);
+			}
+			
+			if (mOnSuccesCallback != null)
+				mOnSuccesCallback();
+		}
+		trace("complete");
 	}
 	
 	public function put(key : String, value : Dynamic) {
 		mData.set(key, value);
 		mUpdatedFields.push(key);
+	}
+	
+	public function get(key : String) : Dynamic {
+		return mData.get(key);
 	}
 	
 	function getJson() : String {
@@ -59,46 +112,22 @@ class ParseObject
 			mUpdatedFields.pop();
 	}
 	
-	public function save() {
-		mHttp.url = mUrl;
-		mHttp.setPostData(getJson());
+	public function save(onSuccessCallback : Void -> Void = null, onFailCallback : Void -> Void = null) {
+		mRequest.data = getJson();
 		
-		if (mId != null) {
-			var output = new BytesOutput();
-			mHttp.url = mUrl + "/" + mId;
-			try {
-				mHttp.customRequest(true, output, "PUT");
-			}catch (e : Dynamic) {
-				trace(e);
-			}
+		if(mId == null){
+			mRequest.url = mUrl;
+			mRequest.method = URLRequestMethod.POST;
+		} else {
+			mRequest.url = mUrl + "/" + mId;
+			mRequest.method = URLRequestMethod.PUT;
 		}
-		else
-			mHttp.request(true);
 		
-		var answerData : String = mHttp.responseData;
-		if (mHttp.responseHeaders.get("Status") != null) 
-			throw new ParseException("Error : " + mHttp.responseHeaders.get("Status"));
-		else {
-			var parsedAnswer = Json.parse(answerData);
-			
-			if (Reflect.hasField(parsedAnswer, "error"))
-				throw new ParseException(Reflect.field(parsedAnswer, "error"));
-			else {
-				mId = Reflect.field(parsedAnswer, "objectId");
-				emptyUpdate();
-			}
-		}
-	}
-	
-	function saveThread() {
-		save();
-		if (mSaveCallback != null)
-			mSaveCallback ();
-	}
-	
-	public function saveInBackground(saveCallback : Void -> Void = null) {
-		mSaveCallback = saveCallback;
-		Thread.create(saveThread);
+		mUrlLoader.load(mRequest);
+		
+		mRequestSuccess = false;
+		mOnSuccesCallback = onSuccessCallback;
+		mOnFailCallback = onFailCallback;
 	}
 	
 	public function getObjectId() : String {
