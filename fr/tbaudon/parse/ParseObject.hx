@@ -15,8 +15,7 @@ import openfl.net.URLLoader;
  * ...
  * @author TBaudon
  */
-class ParseObject
-{
+class ParseObject {
 	
 	var mClassName : String;
 	var mUrl : String;
@@ -33,20 +32,15 @@ class ParseObject
 	var mOnSuccesCallback : Void->Void;
 	var mOnFailCallback : Void->Void;
 	
-	public function new(className : String) 
+	public function new(className : String = null) 
 	{
 		mClassName = className;
-		
-		mUrl = Parse.getApiUrl() + "/classes/" + mClassName;
 		
 		mData = new Map<String, Dynamic>();
 		mUpdatedFields = new Array<String>();		
 		
-		mRequest = new URLRequest(mUrl);
-		var appId = new URLRequestHeader("X-Parse-Application-Id", Parse.applicationId);
-		var appApiKey = new URLRequestHeader("X-Parse-REST-API-Key", Parse.RESTApiKey);
-		mRequest.requestHeaders = [appId, appApiKey];
-		mRequest.contentType = "application/json";
+		mRequest = Parse.prepareRESTRequest(getTypeName(), mClassName);
+		mUrl = mRequest.url;
 		
 		mUrlLoader = new URLLoader();
 		
@@ -55,11 +49,13 @@ class ParseObject
 		mUrlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
 	}
 	
-	private function onHttpStatus(e:HTTPStatusEvent):Void 
+	function onHttpStatus(e:HTTPStatusEvent):Void 
 	{
 		var status = e.status;
 		if (status >= 200 && status <= 205)
 			mRequestSuccess = true;
+		else
+			mRequestSuccess = false;
 		trace(e.status);
 	}
 	
@@ -136,6 +132,10 @@ class ParseObject
 	
 	public function setObjectId(obejctId : String) {
 		mId = obejctId;
+	}
+	
+	static public function getTypeName() : String {
+		return "classes";
 	}
 	
 }
