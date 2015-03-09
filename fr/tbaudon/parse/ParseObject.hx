@@ -25,7 +25,10 @@ class ParseObject {
 	
 	var mData : Map<String, Dynamic>;
 	var mUpdatedFields : Array<String>;
+	
 	var mId : String;
+	var mCreatedAt : Date;
+	var mUpdatedAt : Date;
 	
 	var mRequestSuccess : Bool = false;
 	
@@ -59,12 +62,10 @@ class ParseObject {
 			mRequestSuccess = true;
 		else
 			mRequestSuccess = false;
-		trace(e.status);
 	}
 	
 	function onRequestError(e:ErrorEvent):Void 
 	{
-		trace("error");
 		if (mSaveFailCallback != null)
 			mSaveFailCallback();
 	}
@@ -78,6 +79,10 @@ class ParseObject {
 				var data = Json.parse(answerData);
 				if(Reflect.hasField(data, "objectId"))
 					mId = Reflect.field(data, "objectId");
+				if (Reflect.hasField(data, "createdAt"))
+					mCreatedAt = convertDate(Reflect.field(data, "createdAt"));
+				if  (Reflect.hasField(data, "updatedAt"))
+					mUpdatedAt = convertDate(Reflect.field(data, "updatedAt"));
 			}catch (e : Dynamic) {
 				trace(e);
 			}
@@ -85,7 +90,13 @@ class ParseObject {
 			if (mSaveSuccesCallback != null)
 				mSaveSuccesCallback();
 		}
-		trace("complete");
+	}
+	
+	function convertDate(date : String) : Date {
+		date = StringTools.replace(date, '.', ':');
+		date = StringTools.replace(date, 'T', ' ');
+		date = date.substr(0, date.length - 5);
+		return Date.fromString(date);
 	}
 	
 	public function put(key : String, value : Dynamic) {
@@ -157,8 +168,24 @@ class ParseObject {
 		return mId;
 	}
 	
+	public function getCreationDate() : Date {
+		return mCreatedAt;
+	}
+	
+	public function getUpdateDate() : Date {
+		return mUpdatedAt;
+	}
+	
 	public function setObjectId(obejctId : String) {
 		mId = obejctId;
+	}
+	
+	public function setCreatedAt(date : String) {
+		mCreatedAt = convertDate(date);
+	}
+	
+	public function setUpdatedAt(date : String) {
+		mUpdatedAt = convertDate(date);
 	}
 	
 	static public function getTypeName() : String {
@@ -171,8 +198,10 @@ class ParseObject {
 		for (field in Reflect.fields(json)) 
 			if (field == "objectId")
 				rep.setObjectId(Reflect.field(json, field));
-			else if (field == "createdAt" || field == "updatedAt")
-				continue;
+			else if (field == "createdAt")
+				rep.setCreatedAt(Reflect.field(json, field));
+			else if (field == "updatedAt")
+				rep.setUpdatedAt(Reflect.field(json, field));
 			else
 				rep.put(field, Reflect.field(json, field));
 		

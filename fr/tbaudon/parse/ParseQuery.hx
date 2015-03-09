@@ -75,8 +75,6 @@ class ParseQuery {
 			}
 		} 
 		
-		trace("complete");
-		
 		switch(mRequestType) {
 			case "get" :
 				if (data != null)
