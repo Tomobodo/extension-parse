@@ -29,8 +29,11 @@ class ParseObject {
 	
 	var mRequestSuccess : Bool = false;
 	
-	var mOnSuccesCallback : Void->Void;
-	var mOnFailCallback : Void->Void;
+	var mSaveSuccesCallback : Void->Void;
+	var mSaveFailCallback : Void->Void;
+	
+	var mOnFetchCallback : Void -> Void;
+	var mOnFetchFailCallback : Void -> Void;
 	
 	public function new(className : String = null) 
 	{
@@ -62,8 +65,8 @@ class ParseObject {
 	function onRequestError(e:ErrorEvent):Void 
 	{
 		trace("error");
-		if (mOnFailCallback != null)
-			mOnFailCallback();
+		if (mSaveFailCallback != null)
+			mSaveFailCallback();
 	}
 	
 	function onRequestComplete(e:Event):Void 
@@ -79,8 +82,8 @@ class ParseObject {
 				trace(e);
 			}
 			
-			if (mOnSuccesCallback != null)
-				mOnSuccesCallback();
+			if (mSaveSuccesCallback != null)
+				mSaveSuccesCallback();
 		}
 		trace("complete");
 	}
@@ -122,8 +125,32 @@ class ParseObject {
 		mUrlLoader.load(mRequest);
 		
 		mRequestSuccess = false;
-		mOnSuccesCallback = onSuccessCallback;
-		mOnFailCallback = onFailCallback;
+		mSaveSuccesCallback = onSuccessCallback;
+		mSaveFailCallback = onFailCallback;
+	}
+	
+	public function fetch(onFetchSucess : Void -> Void, onFetchFail : Void -> Void) {
+		mOnFetchCallback = onFetchSucess;
+		mOnFetchFailCallback = onFetchFail;
+		
+		var query = new ParseQuery(Type.getClass(this), mClassName);
+		query.get(mId, onFetchComplete); 
+	}
+	
+	function onFetchComplete(object : ParseObject, exception : ParseException) {
+		if (object == null && mOnFetchFailCallback != null)
+			mOnFetchFailCallback();
+		else {
+			for (key in object.mData.keys())
+				mData[key] = object.mData[key];
+				
+			if (mOnFetchCallback != null)
+				mOnFetchCallback();
+		}
+	}
+	
+	function copy(obj : ParseObject) {
+		
 	}
 	
 	public function getObjectId() : String {
