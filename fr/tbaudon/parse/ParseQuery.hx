@@ -12,7 +12,7 @@ import openfl.events.IOErrorEvent;
  * ...
  * @author Thomas B
  */
-class ParseQuery<T:(ParseObject)> {
+class ParseQuery {
 	
 	var mClassName : String;
 	
@@ -25,19 +25,15 @@ class ParseQuery<T:(ParseObject)> {
 	
 	var mRequestType : String;
 	
-	var mGetCallBack : T -> ParseException -> Void;
+	var mGetCallBack : ParseObject -> ParseException -> Void;
 	
 	var mRequestSuccess : Bool;
-	
-	public static function getQuery<T>(objectClass : Class<ParseObject>, className : String = null) {
-		return new ParseQuery<T>(className, objectClass);
-	}
 
-	function new(className : String, objectClass : Class<ParseObject>) {
+	public function new(objectClass : Class<ParseObject>, className : String) {
 		mClassName = className;
 		mObjectClass = objectClass;
 		
-		mRequest = Parse.prepareRESTRequest(Reflect.field(objectClass, "getTypeName")(), mClassName);
+		mRequest = Parse.prepareRESTRequest(ParseObject.getTypeName(), mClassName);
 		mBaseUrl = mRequest.url;
 		
 		mUrlLoader = new URLLoader();
@@ -69,20 +65,29 @@ class ParseQuery<T:(ParseObject)> {
 	{
 		var answerData = mUrlLoader.data;
 		
+		var data : Dynamic = null;
+		
 		if (mRequestSuccess) {
 			try {
-				var data = Json.parse(answerData);
-				trace(data);
+				data = Json.parse(answerData);
 			}catch (e : Dynamic) {
 				trace(e);
 			}
-		}else {
-			
-		}
+		} 
+		
 		trace("complete");
+		
+		switch(mRequestType) {
+			case "get" :
+				if (data != null)
+					mGetCallBack(ParseObject.fromJSON(mClassName, data), null);
+				else
+					mGetCallBack(null, new ParseException("No data found"));
+		}
+		
 	}
 	
-	public function get(id : String, getCallBack : T -> ParseException -> Void) {
+	public function get(id : String, getCallBack : ParseObject -> ParseException -> Void) {
 		mGetCallBack = getCallBack;
 		
 		mRequest.url = mBaseUrl + "/" + id;

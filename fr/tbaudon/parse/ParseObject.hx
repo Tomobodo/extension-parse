@@ -138,4 +138,18 @@ class ParseObject {
 		return "classes";
 	}
 	
+	static public function fromJSON(className : String, json : Dynamic) : ParseObject {
+		var rep = new ParseObject(className);
+		
+		for (field in Reflect.fields(json)) 
+			if (field == "objectId")
+				rep.setObjectId(Reflect.field(json, field));
+			else if (field == "createdAt" || field == "updatedAt")
+				continue;
+			else
+				rep.put(field, Reflect.field(json, field));
+		
+		return rep;
+	}
+	
 }
