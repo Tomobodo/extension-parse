@@ -38,6 +38,9 @@ class ParseObject {
 	var mOnFetchCallback : Void -> Void;
 	var mOnFetchFailCallback : Void -> Void;
 	
+	var mOnDeleteCallback : Void -> Void;
+	var mOnDeleteFailCallback : Void -> Void;
+	
 	public function new(className : String = null) 
 	{
 		mClassName = className;
@@ -140,28 +143,32 @@ class ParseObject {
 		mSaveFailCallback = onFailCallback;
 	}
 	
-	public function fetch(onFetchSucess : Void -> Void, onFetchFail : Void -> Void) {
-		mOnFetchCallback = onFetchSucess;
+	public function fetch(onFetchSuccess : Void -> Void, onFetchFail : Void -> Void) {
+		mOnFetchCallback = onFetchSuccess;
 		mOnFetchFailCallback = onFetchFail;
 		
 		var query = new ParseQuery(Type.getClass(this), mClassName);
 		query.get(mId, onFetchComplete); 
 	}
 	
+	public function delete(onDeleteSuccess : Void ->  Void, onDeleteFail : Void -> Void) {
+		
+	}
+	
 	function onFetchComplete(object : ParseObject, exception : ParseException) {
 		if (object == null && mOnFetchFailCallback != null)
 			mOnFetchFailCallback();
 		else {
-			for (key in object.mData.keys())
-				mData[key] = object.mData[key];
+			copy(object);
 				
 			if (mOnFetchCallback != null)
 				mOnFetchCallback();
 		}
 	}
 	
-	function copy(obj : ParseObject) {
-		
+	public function copy(obj : ParseObject) {
+		for (key in obj.mData.keys())
+			mData[key] = obj.mData[key];
 	}
 	
 	public function getObjectId() : String {

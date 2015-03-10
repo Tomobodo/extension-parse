@@ -2,14 +2,14 @@ package fr.tbaudon.parse;
 
 
 import org.haxe.extension.Extension;
-import org.haxe.lime.HaxeObject;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.parse.Parse;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.parse.ParseException;
+import com.parse.ParsePush;
+import com.parse.SaveCallback;
 
 
 /* 
@@ -41,23 +41,28 @@ import com.parse.ParseQuery;
 public class ParseWrapper extends Extension {
 	
 	public static void initialize(String applicationId, String clientKey){
-		Parse.initialize(mainContext, applicationId, clientKey);
+		
 	}
 	
-	public static ParseObject createParseObject(String name){
-		return new ParseObject(name);
+	public static void subscribe(String channel) {
+		ParsePush.subscribeInBackground(channel, new SaveCallback() {
+			
+			@Override
+			public void done(ParseException e) {
+				if(e == null)
+					Log.i("trace", "successfully suscribed");
+				else
+					Log.i("trace", "failed to subscribe", e);
+			}
+		});
 	}
 	
-	public static String toJavaString(String object){
-		return object;
-	}
-	
-	public static Number fromIntTojavaNumber(int num){
-		return num;
-	}
-	
-	public static Number fromFloatTojavaNumber(float num){
-		return num;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+		
 	}
 	
 }

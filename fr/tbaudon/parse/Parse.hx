@@ -2,6 +2,7 @@ package fr.tbaudon.parse ;
 
 import openfl.net.URLRequest;
 import openfl.net.URLRequestHeader;
+import openfl.utils.JNI;
 
 class Parse {
 	
@@ -55,6 +56,11 @@ class Parse {
 		return clientKey;
 	}
 	
+	#if android
 	
+	//static var jni_init : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "initialize", "(Ljava/lang/String;Ljava/lang/String;)V");
+	
+	
+	#end
 	
 }

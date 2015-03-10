@@ -96,4 +96,6 @@ class ParseQuery {
 		mUrlLoader.load(mRequest);
 	}
 	
+	
+	
 }
