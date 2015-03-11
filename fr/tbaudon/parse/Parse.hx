@@ -41,6 +41,19 @@ class Parse {
 		return request;
 	}
 	
+	public static function getExtraData() : String {
+		
+		var data : String = null;
+		
+		#if android
+		
+		data = jni_extraData.get();
+		
+		#end
+		
+		return data;
+	}
+	
 	static function get_applicationId():String 
 	{
 		return applicationId;
@@ -58,8 +71,7 @@ class Parse {
 	
 	#if android
 	
-	//static var jni_init : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "initialize", "(Ljava/lang/String;Ljava/lang/String;)V");
-	
+	static var jni_extraData = JNI.createStaticField("fr.tbaudon.parse.ParseWrapper", "extraData", "Ljava/lang/String;");
 	
 	#end
 	

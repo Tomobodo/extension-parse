@@ -29,11 +29,14 @@ class ParseQuery {
 	
 	var mRequestSuccess : Bool;
 
-	public function new(objectClass : Class<ParseObject>, className : String) {
+	public function new(objectClass : Class<ParseObject>, className : String = null) {
 		mClassName = className;
 		mObjectClass = objectClass;
 		
-		mRequest = Parse.prepareRESTRequest(ParseObject.getTypeName(), mClassName);
+		var getTypeName = Reflect.field(mObjectClass, "getTypeName");
+		var typeName = Reflect.callMethod(mObjectClass, getTypeName, []);
+		
+		mRequest = Parse.prepareRESTRequest(typeName, mClassName);
 		mBaseUrl = mRequest.url;
 		
 		mUrlLoader = new URLLoader();

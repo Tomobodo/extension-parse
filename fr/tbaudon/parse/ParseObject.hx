@@ -46,9 +46,13 @@ class ParseObject {
 		mClassName = className;
 		
 		mData = new Map<String, Dynamic>();
-		mUpdatedFields = new Array<String>();		
+		mUpdatedFields = new Array<String>();	
 		
-		mRequest = Parse.prepareRESTRequest(getTypeName(), mClassName);
+		var currentClass : Class<ParseObject> = Type.getClass(this);
+		var getTypeNameField = Reflect.field(currentClass, "getTypeName");
+		var typeName = Reflect.callMethod(currentClass, getTypeNameField, []);
+		
+		mRequest = Parse.prepareRESTRequest(typeName, mClassName);
 		mUrl = mRequest.url;
 		
 		mUrlLoader = new URLLoader();

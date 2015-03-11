@@ -1,12 +1,16 @@
 package fr.tbaudon.parse;
 
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.haxe.extension.Extension;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.parse.Parse;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
@@ -40,6 +44,8 @@ import com.parse.SaveCallback;
 */
 public class ParseWrapper extends Extension {
 	
+	public static String extraData;
+	
 	public static void initialize(String applicationId, String clientKey){
 		
 	}
@@ -62,7 +68,15 @@ public class ParseWrapper extends Extension {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
+		Intent intent = mainActivity.getIntent();
+		Bundle bundle = intent.getExtras();
 		
+		if(bundle != null) {
+			if(bundle.containsKey("com.parse.Data"))
+				extraData = bundle.getString("com.parse.Data");
+		}
+		
+		ParseAnalytics.trackAppOpenedInBackground(intent);
 	}
 	
 }
