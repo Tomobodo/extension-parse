@@ -10,20 +10,12 @@
 #include <hx/CFFI.h>
 #include "Utils.h"
 
-
 using namespace parse;
 
-
-
-static value parse_sample_method (value inputValue) {
-	
-	int returnValue = SampleMethod(val_int(inputValue));
-	return alloc_int(returnValue);
-	
+static void parse_test() {
+    test();
 }
-DEFINE_PRIM (parse_sample_method, 1);
-
-
+DEFINE_PRIM(parse_test, 0);
 
 extern "C" void parse_main () {
 	

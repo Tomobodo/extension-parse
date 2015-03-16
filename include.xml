@@ -5,6 +5,8 @@
 	
 	<dependency name="parse" path="dependencies/android" if="android" />
 	<android extension="fr.tbaudon.parse.ParseWrapper" />
+
+	<ndll name="parse" if="ios" />
 	
 	<template path="templates" />
 	
