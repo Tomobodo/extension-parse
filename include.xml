@@ -6,8 +6,23 @@
 	<dependency name="parse" path="dependencies/android" if="android" />
 	<android extension="fr.tbaudon.parse.ParseWrapper" />
 
-	<ndll name="parse" if="ios" />
-	
+    <section if="ios">
+        <ndll name="parse" />
+        <dependency path="dependencies/ios/Bolts.framework" />
+        <dependency path="dependencies/ios/Parse.framework" />
+        <dependency name="AudioToolbox.framework" />
+        <dependency name="CFNetwork.framework" />
+        <dependency name="CoreGraphics.framework" />
+        <dependency name="CoreLocation.framework" />
+        <dependency name="MobileCoreServices.framework" />
+        <dependency name="QuartzCore.framework" />
+        <dependency name="Security.framework" />
+        <dependency name="StoreKit.framework" />
+        <dependency name="SystemConfiguration.framework" />
+        <dependency name="z" />
+        <dependency name="sqlite3" />
+	</section>
+    
 	<template path="templates" />
 	
 </project>

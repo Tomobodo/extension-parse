@@ -4,6 +4,10 @@ import openfl.net.URLRequest;
 import openfl.net.URLRequestHeader;
 import openfl.utils.JNI;
 
+#if cpp
+import cpp.Lib;
+#end
+
 class Parse {
 	
 	public static var applicationId(get, null) : String = "";
@@ -17,6 +21,10 @@ class Parse {
 		Parse.applicationId = applicationId;
 		Parse.clientKey = clientKey;
 		Parse.RESTApiKey = RESTApiKey;
+
+		#if ios
+		objC_initialize(applicationId, clientKey);
+		#end
 	}
 	
 	public static function getApiUrl() : String {
@@ -73,6 +81,10 @@ class Parse {
 	
 	static var jni_extraData = JNI.createStaticField("fr.tbaudon.parse.ParseWrapper", "extraData", "Ljava/lang/String;");
 	
+	#elseif ios
+
+	static var objC_initialize = Lib.load("parse", "parse_initialize", 2);
+
 	#end
 	
 }

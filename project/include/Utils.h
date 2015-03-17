@@ -3,7 +3,7 @@
 
 namespace parse {
 	
-    void test();
+    void initialize(const char* appId, const char* clientKey);
 	
 }
 

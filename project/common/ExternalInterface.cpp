@@ -12,10 +12,14 @@
 
 using namespace parse;
 
-static void parse_test() {
-    test();
+static void parse_initialize(value appId, value clientKey) {
+    
+    const char * strAppId = val_string(appId);
+    const char * strClientKey = val_string(clientKey);
+    
+    initialize(strAppId, strClientKey);
 }
-DEFINE_PRIM(parse_test, 0);
+DEFINE_PRIM(parse_initialize, 2);
 
 extern "C" void parse_main () {
 	

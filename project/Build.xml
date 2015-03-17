@@ -1,7 +1,7 @@
 <xml>
 	
 	<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
-	
+
 	<files id="common">
 		
 		<compilerflag value="-Iinclude"/>
@@ -10,11 +10,13 @@
 	</files>
     
     <files id="iphone">
+        <compilerflag value="-IiPhone/include"/>
         <compilerflag value="-Iinclude" />
+        <compilerflag value="-F../dependencies/ios/" />
         
         <file name="iphone/OpenFLParse.mm" />
     </files>
-	
+    
 	<set name="SLIBEXT" value=".lib" if="windows"/>
 	<set name="SLIBEXT" value=".a" unless="windows"/>
 	<set name="SLIBEXT" value=".so" if="webos"/>
@@ -22,11 +24,18 @@
 	<set name="DEBUGEXTRA" value="-debug" if="fulldebug" />
 	
 	<target id="NDLL" output="${LIBPREFIX}parse${MSVC_LIB_VERSION}${DEBUGEXTRA}${LIBEXTRA}" tool="linker" toolid="${STD_MODULE_LINK}">
-		
+        
 		<outdir name="../ndll/${BINDIR}"/>
 		<ext value=".ndll" if="windows || mac || linux"/>
+      
 		<files id="common"/>
-		<files id="iphone" if="iphone" />
+        
+        <section if="iphone" >
+            <vflag name="-framework" value="Parse" />
+            <vflag name="-framework" value="Bolts" />
+            <files id="iphone" if="iphone" />
+        </section>
+        
 	</target>
 	
 	<target id="default">
