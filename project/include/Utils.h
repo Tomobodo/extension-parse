@@ -4,6 +4,8 @@
 namespace parse {
 	
     void initialize(const char* appId, const char* clientKey);
+    
+    void subscribe(const char* channel);
 	
 }
 

@@ -10,11 +10,12 @@
 	</files>
     
     <files id="iphone">
-        <compilerflag value="-IiPhone/include"/>
+        <compilerflag value="-Iiphone"/>
         <compilerflag value="-Iinclude" />
         <compilerflag value="-F../dependencies/ios/" />
         
         <file name="iphone/OpenFLParse.mm" />
+        <!--<file name="iphone/AppDelegate+Notification.mm" />-->
     </files>
     
 	<set name="SLIBEXT" value=".lib" if="windows"/>

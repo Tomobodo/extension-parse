@@ -21,9 +21,15 @@ static void parse_initialize(value appId, value clientKey) {
 }
 DEFINE_PRIM(parse_initialize, 2);
 
+static void parse_subscribe(value channel){
+    subscribe(val_string(channel));
+}
+DEFINE_PRIM(parse_subscribe, 1);
+
 extern "C" void parse_main () {
 	
 	val_int(0); // Fix Neko init
+    
 	
 }
 DEFINE_ENTRY_POINT (parse_main);
