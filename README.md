@@ -1,5 +1,6 @@
-# OpenFL Parse 
-Only available on Android at the moment.
+# Parse 
+
+Provide acces to Parse from OpenFL.
 
 ## Usage
 
