@@ -6,8 +6,9 @@
         <compilerflag value="-Iinclude" />
         <compilerflag value="-F../dependencies/ios/" />
         
-        <file name="iphone/OpenFLParse.mm" />
-        <file name="iphone/ParseWrapper.m" />
+        <file name="src/PushNotification.m" />
+        <file name="src/OpenFLParse.mm" />
+        <file name="src/ParseWrapper.m" />
     </files>
     
 	<set name="SLIBEXT" value=".lib" if="windows"/>

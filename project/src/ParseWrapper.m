@@ -10,10 +10,12 @@
 #import <Parse/Parse.h>
 
 #include "ParseWrapper.h"
+#include "PushNotification.h"
 
 @implementation ParseWrapper
 
 UIApplication * mApplication;
+PushNotification * mPushNotification;
 
 -(id)initWithAppId:(const char*)appId clientKey:(const char*)clientKey{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidLaunchWithOptions:) name:UIApplicationDidFinishLaunchingNotification object:nil];
@@ -43,6 +45,10 @@ UIApplication * mApplication;
 }
 
 -(void)registerForNotification {
+    
+    mPushNotification = [[PushNotification alloc] init];
+    NMEAppDelegate * nmeDelegate = [mApplication delegate];
+    [nmeDelegate setPushNotif:mPushNotification];
     
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
                                                     UIUserNotificationTypeBadge |
