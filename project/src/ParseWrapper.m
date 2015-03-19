@@ -16,6 +16,7 @@
 
 UIApplication * mApplication;
 PushNotification * mPushNotification;
+NMEAppDelegate * mNMEDelegate;
 
 -(id)initWithAppId:(const char*)appId clientKey:(const char*)clientKey{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidLaunchWithOptions:) name:UIApplicationDidFinishLaunchingNotification object:nil];
@@ -36,9 +37,16 @@ PushNotification * mPushNotification;
         NSDictionary* launchOptions = [notification userInfo];
         if(launchOptions) {
             
-            NSLog(@"LaunchOptions not null");
+            if (mApplication.applicationState != UIApplicationStateBackground) {
             
-            
+                BOOL preBackgroundPush = ![mApplication respondsToSelector:@selector(backgroundRefreshStatus)];
+                BOOL oldPushHandlerOnly = ![mNMEDelegate respondsToSelector:@selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)];
+                BOOL noPushPayload = ![launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+                
+                if (preBackgroundPush || oldPushHandlerOnly || noPushPayload)
+                    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+                
+            }
             
         }
     }
@@ -47,8 +55,8 @@ PushNotification * mPushNotification;
 -(void)registerForNotification {
     
     mPushNotification = [[PushNotification alloc] init];
-    NMEAppDelegate * nmeDelegate = [mApplication delegate];
-    [nmeDelegate setPushNotif:mPushNotification];
+    mNMEDelegate = [mApplication delegate];
+    [mNMEDelegate setPushNotif:mPushNotification];
     
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
                                                     UIUserNotificationTypeBadge |
