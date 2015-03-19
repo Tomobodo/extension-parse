@@ -13,7 +13,10 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-#include "Utils.h"
+#include <hx/CFFI.h>
+
+//#include "Utils.h"
+#include "ParseWrapper.h"
 
 @interface PushNotification : NSObject
 @end
@@ -22,12 +25,17 @@
 @end
 
 @interface NMEAppDelegate (PushNotification)
+
 @property (nonatomic, retain) id pushNotif;
+
 @end
+
 static char const * const PushNotifKey = "pushnotification";
 
 @implementation NMEAppDelegate (PushNotification)
+
 @dynamic pushNotif;
+
 -(id)pushNotif {
     return objc_getAssociatedObject(self, PushNotifKey);
 }
@@ -37,7 +45,6 @@ static char const * const PushNotifKey = "pushnotification";
 }
 
 -(void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
-    NSLog(@"Push register success");
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     currentInstallation.channels = @[@"global"];
@@ -49,41 +56,46 @@ static char const * const PushNotifKey = "pushnotification";
 }
 
 -(void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"Notification received!");
     [PFPush handlePush:userInfo];
 }
 
 @end
 
+
 namespace parse {
     
-    void initialize(const char* appId, const char* clientKey){
+    ParseWrapper * wrapper;
+    
+    /*void initialize(const char* appId, const char* clientKey){
         
-        NSString* strAppId = [NSString stringWithUTF8String:appId];
-        NSString* strClientKey = [NSString stringWithUTF8String:clientKey];
+        wrapper = [[ParseWrapper alloc] initWithAppId: appId clientKey: clientKey];
         
-        [Parse setApplicationId:strAppId clientKey:strClientKey];
-
-        NSLog(@"Initialize %@ %@", strAppId, strClientKey);
     }
     
     void subscribe(const char * channel){
         
-        NSLog(@"Subscribing.");
-        
-        UIApplication* application = [UIApplication sharedApplication];
-        
-        UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
-                                                        UIUserNotificationTypeBadge |
-                                                        UIUserNotificationTypeSound);
-        
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
-                                                                                 categories:nil];
-        
-        [application registerUserNotificationSettings:settings];
-        [application registerForRemoteNotifications];
-        
+        [wrapper registerForNotification];
+     
+    }*/
+    
+    static void initialize(value appId, value clientKey){
+        wrapper = [[ParseWrapper alloc] initWithAppId: val_string(appId) clientKey: val_string(clientKey)];
     }
+    DEFINE_PRIM(initialize, 2);
+    
+    static void subscribe(value channel){
+        [wrapper registerForNotification];
+    }
+    DEFINE_PRIM(subscribe, 1);
     
 }
 
+extern "C" void parse_main () {
+    
+    val_int(0); // Fix Neko init
+    
+    NSLog(@"Parse entry point");
+}
+DEFINE_ENTRY_POINT (parse_main);
+
+extern "C" int parse_register_prims () { return 0; }

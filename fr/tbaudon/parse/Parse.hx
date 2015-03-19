@@ -83,7 +83,7 @@ class Parse {
 	
 	#elseif ios
 
-	static var objC_initialize = Lib.load("parse", "parse_initialize", 2);
+	static var objC_initialize = Lib.load("parse", "initialize", 2);
 
 	#end
 	

@@ -1,21 +1,13 @@
 <xml>
 	
 	<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
-
-	<files id="common">
-		
-		<compilerflag value="-Iinclude"/>
-		
-		<file name="common/ExternalInterface.cpp"/>
-	</files>
     
     <files id="iphone">
-        <compilerflag value="-Iiphone"/>
         <compilerflag value="-Iinclude" />
         <compilerflag value="-F../dependencies/ios/" />
         
         <file name="iphone/OpenFLParse.mm" />
-        <!--<file name="iphone/AppDelegate+Notification.mm" />-->
+        <file name="iphone/ParseWrapper.m" />
     </files>
     
 	<set name="SLIBEXT" value=".lib" if="windows"/>
@@ -28,8 +20,6 @@
         
 		<outdir name="../ndll/${BINDIR}"/>
 		<ext value=".ndll" if="windows || mac || linux"/>
-      
-		<files id="common"/>
         
         <section if="iphone" >
             <vflag name="-framework" value="Parse" />

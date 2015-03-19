@@ -29,7 +29,7 @@ class ParsePush
 	#if android
 	static var jni_subscribe : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "subscribe", "(Ljava/lang/String;)V");
 	#elseif ios
-	static var objC_subscribe : Dynamic = Lib.load("parse", "parse_subscribe", 1);
+	static var objC_subscribe : Dynamic = Lib.load("parse", "subscribe", 1);
 	#end
 	
 }
