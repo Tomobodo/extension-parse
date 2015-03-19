@@ -21,25 +21,16 @@ class Main extends Sprite {
 		
 		super ();
 		
-		Parse.initialize("yourAppId", "yourClientKey");
+		Parse.initialize("yourAppId", "yourClientKey", "yourRestAPIKey");
+		
+		ParsePush.subscribe("channelA"); // parameter is useless at the moment, just subscribe your app for general push notification.
 		
 		var testObj = new ParseObject("User");
 		testObj.put("name", "Martin");
 		testObj.put("age", 10);
 		testObj.put("sexe", "M");
-		testObj.saveInBackground();
+		testObj.save();
 		
-		var query : ParseQuery<ParseObject> = ParseQuery.getObjectQuery("User").whereEqualTo("name", "Martin");
-		query.findInBackground(cb);
-	}
-	
-	public function cb(rep : List<ParseObject>, e : ParseException) {
-		if (e != null)
-			trace("A problem occured while loading data.");
-		else {
-			var a : ParseObject = rep.first();
-			trace(a.getInt("age"));
-		}
 	}
 }
 ```
