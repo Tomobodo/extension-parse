@@ -1,4 +1,4 @@
-package fr.tbaudon.parse ;
+package extension.parse ;
 
 import openfl.net.URLRequest;
 import openfl.net.URLRequestHeader;

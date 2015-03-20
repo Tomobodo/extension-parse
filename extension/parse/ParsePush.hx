@@ -1,4 +1,4 @@
-package fr.tbaudon.parse;
+package extension.parse;
 
 import openfl.utils.JNI;
 
@@ -17,13 +17,24 @@ class ParsePush
 	{
 		
 	}
-	
-	public static function subscribe(channel : String) {
+
+	/**
+	* Register for notification on iOs and Android
+	**/
+	public static function init() {
 		#if android
-		jni_subscribe(channel);
+		jni_subscribe("global");
 		#elseif ios
-		objC_subscribe(channel);
+		objC_subscribe("global");
 		#end
+	}
+
+	/**
+	* Subscribe current device to a specified channel
+	* @param channel channel to subscribe to
+	**/
+	public static function subscribe(channel : String) {
+
 	}
 	
 	#if android

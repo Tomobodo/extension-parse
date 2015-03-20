@@ -1,4 +1,4 @@
-package fr.tbaudon.parse;
+package extension.parse;
 import haxe.Json;
 import openfl.net.URLLoader;
 import openfl.net.URLRequest;
