@@ -9,32 +9,38 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <hx/CFFI.h>
 
-#include "ParseWrapper.h"
+#include "OpenFLParse.h"
 
 namespace parse {
-    
-    ParseWrapper * wrapper;
     
     static void initialize(value appId, value clientKey){
         wrapper = [[ParseWrapper alloc] initWithAppId: val_string(appId) clientKey: val_string(clientKey)];
     }
     DEFINE_PRIM(initialize, 2);
     
-    static void subscribe(value channel){
+    static void subscribe(value onRegister){
+        if(onRegister != NULL)
+            eval_RegisterSucces = new AutoGCRoot(onRegister);
         [wrapper registerForNotification];
     }
     DEFINE_PRIM(subscribe, 1);
     
+    void registerSuccess(const char * installId){
+        if(eval_RegisterSucces != 0)
+            val_call1(eval_RegisterSucces->get(), alloc_string(installId));
+    }
+    
 }
 
-extern "C" void parse_main () {
+extern "C" {
     
-    val_int(0); // Fix Neko init
-    
-    NSLog(@"Parse entry point");
-}
-DEFINE_ENTRY_POINT (parse_main);
+    void parse_main () {
+        val_int(0); // Fix Neko init
+    }
+    DEFINE_ENTRY_POINT (parse_main);
 
-extern "C" int parse_register_prims () { return 0; }
+    int parse_register_prims () { return 0; }
+    
+    
+}

@@ -13,6 +13,8 @@ import cpp.Lib;
 class ParsePush
 {
 
+	static var mInitedCallback : Void -> Void;
+
 	public function new() 
 	{
 		
@@ -21,11 +23,13 @@ class ParsePush
 	/**
 	* Register for notification on iOs and Android
 	**/
-	public static function init() {
+	public static function init(initedCallback = null) {
+		mInitedCallback = mInitedCallback;
+
 		#if android
 		jni_subscribe("global");
 		#elseif ios
-		objC_subscribe("global");
+		objC_subscribe(onInstallationIdObtained);
 		#end
 	}
 
@@ -35,6 +39,14 @@ class ParsePush
 	**/
 	public static function subscribe(channel : String) {
 
+	}
+
+	static function onInstallationIdObtained(id : String){
+		ParseInstallation.currentInstallation = new ParseInstallation();
+		ParseInstallation.currentInstallation.setObjectId(id);
+
+		if(mInitedCallback != null)
+			mInitedCallback();
 	}
 	
 	#if android

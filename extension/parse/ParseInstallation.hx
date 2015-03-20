@@ -7,8 +7,9 @@ package extension.parse;
 class ParseInstallation extends ParseObject
 {
 
-	public function new() 
-	{
+	public static var currentInstallation : ParseInstallation;
+
+	public function new() {
 		super();
 	}
 	

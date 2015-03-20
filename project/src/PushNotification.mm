@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <objc/runtime.h>
 
+#include "OpenFLParse.h"
 #include "PushNotification.h"
 
 @implementation PushNotification
@@ -37,6 +38,10 @@
     [currentInstallation setDeviceTokenFromData:deviceToken];
     currentInstallation.channels = @[@"global"];
     [currentInstallation saveInBackground];
+    
+    const char * installId = [[currentInstallation objectId] UTF8String];
+    
+    parse::registerSuccess(installId);
 }
 
 -(void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
