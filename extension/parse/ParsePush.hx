@@ -24,7 +24,7 @@ class ParsePush
 	* Register for notification on iOs and Android
 	**/
 	public static function init(initedCallback = null) {
-		mInitedCallback = mInitedCallback;
+		mInitedCallback = initedCallback;
 
 		#if android
 		jni_subscribe("global");

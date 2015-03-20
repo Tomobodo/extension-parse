@@ -87,9 +87,9 @@ class ParseObject {
 				if(Reflect.hasField(data, "objectId"))
 					mId = Reflect.field(data, "objectId");
 				if (Reflect.hasField(data, "createdAt"))
-					mCreatedAt = convertDate(Reflect.field(data, "createdAt"));
+					mCreatedAt = FormatHelper.StringToDate(Reflect.field(data, "createdAt"));
 				if  (Reflect.hasField(data, "updatedAt"))
-					mUpdatedAt = convertDate(Reflect.field(data, "updatedAt"));
+					mUpdatedAt = FormatHelper.StringToDate(Reflect.field(data, "updatedAt"));
 			}catch (e : Dynamic) {
 				trace(e);
 			}
@@ -99,14 +99,11 @@ class ParseObject {
 		}
 	}
 	
-	function convertDate(date : String) : Date {
-		date = StringTools.replace(date, '.', ':');
-		date = StringTools.replace(date, 'T', ' ');
-		date = date.substr(0, date.length - 5);
-		return Date.fromString(date);
-	}
-	
 	public function put(key : String, value : Dynamic) {
+
+		if(Std.is(value, Date))
+			value = FormatHelper.DateToString(value);
+
 		mData.set(key, value);
 		mUpdatedFields.push(key);
 	}
@@ -192,11 +189,11 @@ class ParseObject {
 	}
 	
 	public function setCreatedAt(date : String) {
-		mCreatedAt = convertDate(date);
+		mCreatedAt = FormatHelper.StringToDate(date);
 	}
 	
 	public function setUpdatedAt(date : String) {
-		mUpdatedAt = convertDate(date);
+		mUpdatedAt = FormatHelper.StringToDate(date);
 	}
 	
 	static public function getTypeName() : String {
