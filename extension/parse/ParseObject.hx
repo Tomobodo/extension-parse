@@ -102,7 +102,7 @@ class ParseObject {
 	public function put(key : String, value : Dynamic) {
 
 		if(Std.is(value, Date))
-			value = FormatHelper.DateToString(value);
+			value = FormatHelper.DateToJson(value);
 
 		mData.set(key, value);
 		mUpdatedFields.push(key);
