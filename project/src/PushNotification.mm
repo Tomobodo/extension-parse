@@ -46,6 +46,7 @@
 
 -(void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
     NSLog(@"Failed to get token, error: %@", error);
+    parse::registerFail();
 }
 
 -(void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo {

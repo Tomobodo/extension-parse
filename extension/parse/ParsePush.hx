@@ -31,7 +31,7 @@ class ParsePush
 		#if android
 		jni_subscribe();
 		#elseif ios
-		objC_subscribe(onInstallationIdObtained);
+		objC_subscribe(onInstallationIdObtained, onCanNotObtainInstallationId);
 		#end
 	}
 
@@ -59,7 +59,7 @@ class ParsePush
 	#if android
 	static var jni_subscribe : Dynamic = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "subscribe", "()V");
 	#elseif ios
-	static var objC_subscribe : Dynamic = Lib.load("parse", "subscribe", 1);
+	static var objC_subscribe : Dynamic = Lib.load("parse", "subscribe", 2);
 	#end
 	
 }

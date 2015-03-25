@@ -18,12 +18,15 @@ namespace parse {
     ParseWrapper* wrapper;
     
     AutoGCRoot* eval_RegisterSucces = 0;
+    AutoGCRoot* eval_RegisterFail = 0;
         
     static void initialize(value appId, value clientKey);
     
-    static void subscribe(value onRegister);
+    static void subscribe(value onRegister, value onRegisterFail);
     
     void registerSuccess(const char * installId);
+    
+    void registerFail();
     
 }
 

@@ -19,16 +19,25 @@ namespace parse {
     }
     DEFINE_PRIM(initialize, 2);
     
-    static void subscribe(value onRegister){
+    static void subscribe(value onRegister, value onRegisterFail){
         if(onRegister != NULL)
             eval_RegisterSucces = new AutoGCRoot(onRegister);
+        
+        if(onRegisterFail != NULL)
+            eval_RegisterFail = new AutoGCRoot(onRegisterFail);
+        
         [wrapper registerForNotification];
     }
-    DEFINE_PRIM(subscribe, 1);
+    DEFINE_PRIM(subscribe, 2);
     
     void registerSuccess(const char * installId){
         if(eval_RegisterSucces != 0)
             val_call1(eval_RegisterSucces->get(), alloc_string(installId));
+    }
+    
+    void registerFail(){
+        if(eval_RegisterFail != 0)
+            val_call0(eval_RegisterFail->get());
     }
     
 }
