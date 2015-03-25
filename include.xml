@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
+	<haxedef name="Parse_AppId" value="${Parse_AppId}" />
+	<haxedef name="Parse_clientKey" value="${Parse_clientKey}" />
+	<haxedef name="Parse_RESTApiKey" value="${Parse_RESTApiKey}" />
+	
 	<!-- Use the following for an Android Java extension, not needed otherwise -->
 	
 	<dependency name="parse" path="dependencies/android" if="android" />

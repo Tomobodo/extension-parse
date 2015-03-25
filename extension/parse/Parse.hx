@@ -1,5 +1,6 @@
 package extension.parse ;
 
+import haxe.macro.Context;
 import openfl.net.URLRequest;
 import openfl.net.URLRequestHeader;
 import openfl.utils.JNI;
@@ -17,10 +18,11 @@ class Parse {
 	static inline var API_VERSION : Int = 1;
 	static inline var PARSE_REST_API : String = "https://api.parse.com";
 	
-	public static function initialize(applicationId : String, clientKey : String, RESTApiKey : String) {
-		Parse.applicationId = applicationId;
-		Parse.clientKey = clientKey;
-		Parse.RESTApiKey = RESTApiKey;
+	public static function initialize() {
+		Parse.applicationId = ParseMacro.getAppId();
+		Parse.clientKey = ParseMacro.getClientKey();
+		Parse.RESTApiKey = ParseMacro.getRESTKey();
+		
 		#if android
 		jni_initialize(ParsePush);
 		#elseif ios
