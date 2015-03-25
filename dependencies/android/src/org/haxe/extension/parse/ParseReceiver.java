@@ -1,4 +1,4 @@
-package fr.tbaudon.parse;
+package org.haxe.extension.parse;
 
 import android.content.Context;
 import android.content.Intent;

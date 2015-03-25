@@ -21,8 +21,9 @@ class Parse {
 		Parse.applicationId = applicationId;
 		Parse.clientKey = clientKey;
 		Parse.RESTApiKey = RESTApiKey;
-
-		#if ios
+		#if android
+		jni_initialize(ParsePush);
+		#elseif ios
 		objC_initialize(applicationId, clientKey);
 		#end
 	}
@@ -79,7 +80,8 @@ class Parse {
 	
 	#if android
 	
-	static var jni_extraData = JNI.createStaticField("fr.tbaudon.parse.ParseWrapper", "extraData", "Ljava/lang/String;");
+	static var jni_initialize = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "initialize", "(Lorg/haxe/lime/HaxeObject;)V");
+	static var jni_extraData = JNI.createStaticField("org.haxe.extension.parse.ParseWrapper", "extraData", "Ljava/lang/String;");
 	
 	#elseif ios
 

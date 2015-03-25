@@ -1,10 +1,8 @@
-package fr.tbaudon.parse;
+package org.haxe.extension.parse;
 
 import java.util.List;
 
 import org.haxe.lime.HaxeObject;
-
-import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;

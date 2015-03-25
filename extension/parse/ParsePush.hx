@@ -14,6 +14,7 @@ class ParsePush
 {
 
 	static var mInitedCallback : Void -> Void;
+	static var mInitErrorCallback : Void -> Void;
 
 	public function new() 
 	{
@@ -23,11 +24,12 @@ class ParsePush
 	/**
 	* Register for notification on iOs and Android
 	**/
-	public static function init(initedCallback = null) {
+	public static function init(initedCallback : Void -> Void = null, initErrorCallback : Void -> Void = null) {
 		mInitedCallback = initedCallback;
-
+		mInitErrorCallback = initErrorCallback;
+		
 		#if android
-		jni_subscribe("global");
+		jni_subscribe();
 		#elseif ios
 		objC_subscribe(onInstallationIdObtained);
 		#end
@@ -49,8 +51,13 @@ class ParsePush
 			mInitedCallback();
 	}
 	
+	static function onCanNotObtainInstallationId() {
+		if (mInitErrorCallback != null)
+			mInitErrorCallback();
+	}
+	
 	#if android
-	static var jni_subscribe : Dynamic = JNI.createStaticMethod("fr.tbaudon.parse.ParseWrapper", "subscribe", "(Ljava/lang/String;)V");
+	static var jni_subscribe : Dynamic = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "subscribe", "()V");
 	#elseif ios
 	static var objC_subscribe : Dynamic = Lib.load("parse", "subscribe", 1);
 	#end

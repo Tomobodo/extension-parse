@@ -4,7 +4,7 @@
 	<!-- Use the following for an Android Java extension, not needed otherwise -->
 	
 	<dependency name="parse" path="dependencies/android" if="android" />
-	<android extension="fr.tbaudon.parse.ParseWrapper" />
+	<android extension="org.haxe.extension.parse.ParseWrapper" />
 
     <section if="ios">
         <ndll name="parse" />

@@ -1,10 +1,8 @@
-package fr.tbaudon.parse;
+package org.haxe.extension.parse;
 
-
-import java.util.Iterator;
-import java.util.Set;
 
 import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +10,7 @@ import android.util.Log;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
 
@@ -46,19 +45,30 @@ public class ParseWrapper extends Extension {
 	
 	public static String extraData;
 	
-	public static void initialize(String applicationId, String clientKey){
-		
+	private static HaxeObject mHaxeParse;
+	
+	public static void initialize(HaxeObject HaxeParse){
+		mHaxeParse = HaxeParse;
 	}
 	
-	public static void subscribe(String channel) {
-		ParsePush.subscribeInBackground(channel, new SaveCallback() {
+	public static void subscribe() {
+		ParsePush.subscribeInBackground("global", new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
-				if(e == null)
+				if(e == null){
 					Log.i("trace", "successfully suscribed");
-				else
+					
+					ParseInstallation install = ParseInstallation.getCurrentInstallation();
+					String installId = install.getObjectId();
+					
+					mHaxeParse.call1("onInstallationIdObtained", installId);
+				}
+				else{
 					Log.i("trace", "failed to subscribe", e);
+					
+					mHaxeParse.call0("onCanNotObtainInstallationId");
+				}
 			}
 		});
 	}

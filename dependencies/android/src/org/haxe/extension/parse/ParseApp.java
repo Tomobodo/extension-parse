@@ -1,7 +1,6 @@
-package fr.tbaudon.parse;
+package org.haxe.extension.parse;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.parse.Parse;
 
