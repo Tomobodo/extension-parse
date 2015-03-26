@@ -22,13 +22,11 @@ class ParseMacro
 	macro public static function getProjectEnv(name : String) : Dynamic {
 		var projectFile : String = "";
 
-		#if android
-		var directoryToRead = "./";
-		#elseif ios
-		var directoryToRead = "../../../../";
-
+		#if ios
+			var directoryToRead = "../../../../";
+		#else
+			var directoryToRead = "./";
 		#end
-
 
 		for (file in FileSystem.readDirectory(directoryToRead))
 			if (Path.extension(file) == "xml"){
