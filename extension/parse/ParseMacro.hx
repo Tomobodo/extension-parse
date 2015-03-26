@@ -20,12 +20,19 @@ class ParseMacro
 {
 	
 	macro public static function getProjectEnv(name : String) : Dynamic {
-		
 		var projectFile : String = "";
-		
-		for (file in FileSystem.readDirectory(".")) 
+
+		#if android
+		var directoryToRead = "./";
+		#elseif ios
+		var directoryToRead = "../../../../";
+
+		#end
+
+
+		for (file in FileSystem.readDirectory(directoryToRead))
 			if (Path.extension(file) == "xml"){
-				var xmlData : Xml = Xml.parse(File.getContent(file));
+				var xmlData : Xml = Xml.parse(File.getContent(directoryToRead + file));
 				for (elements in xmlData.elements())
 					if (elements.nodeName == "project") {
 						projectFile = file;
