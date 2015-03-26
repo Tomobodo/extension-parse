@@ -1,7 +1,16 @@
 package extension.parse;
+import haxe.io.Path;
+import haxe.xml.Fast;
+
+#if macro
 
 import haxe.macro.Compiler;
 import haxe.macro.Context;
+
+import sys.FileSystem;
+import sys.io.File;
+
+#end
 
 /**
  * ...
@@ -9,17 +18,28 @@ import haxe.macro.Context;
  */
 class ParseMacro
 {
-
-	macro public static function getRESTKey():Dynamic {
-        return Context.makeExpr(Compiler.getDefine("Parse_AppId"), Context.currentPos());
-    }
 	
-	macro public static function getClientKey():Dynamic {
-        return Context.makeExpr(Compiler.getDefine("Parse_clientKey"), Context.currentPos());
-    }
-	
-	macro public static function getAppId():Dynamic {
-		return Context.makeExpr(Compiler.getDefine("Parse_AppId"), Context.currentPos());
-    }
+	macro public static function getProjectEnv(name : String) : Dynamic {
+		
+		var projectFile : String = "";
+		
+		for (file in FileSystem.readDirectory(".")) 
+			if (Path.extension(file) == "xml"){
+				var xmlData : Xml = Xml.parse(File.getContent(file));
+				for (elements in xmlData.elements())
+					if (elements.nodeName == "project") {
+						projectFile = file;
+						for (projectNode in elements.elements()) 
+							if (projectNode.nodeName == "setenv")
+								if (projectNode.get("name") == name){
+									var value = projectNode.get("value");
+									return Context.makeExpr(value, Context.currentPos());
+								}
+					}
+			}
+		
+		throw "No " + name + " env var found in " + projectFile + ".";
+		
+	}
 	
 }

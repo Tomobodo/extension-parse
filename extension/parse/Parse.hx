@@ -19,9 +19,9 @@ class Parse {
 	static inline var PARSE_REST_API : String = "https://api.parse.com";
 	
 	public static function initialize() {
-		Parse.applicationId = ParseMacro.getAppId();
-		Parse.clientKey = ParseMacro.getClientKey();
-		Parse.RESTApiKey = ParseMacro.getRESTKey();
+		Parse.applicationId = ParseMacro.getProjectEnv("Parse_AppId");
+		Parse.clientKey = ParseMacro.getProjectEnv("Parse_clientKey");
+		Parse.RESTApiKey = ParseMacro.getProjectEnv("Parse_RESTApiKey");
 		
 		#if android
 		jni_initialize(ParsePush);
