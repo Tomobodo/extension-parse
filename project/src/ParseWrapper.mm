@@ -28,6 +28,8 @@ NMEAppDelegate * mNMEDelegate;
     
     mApplication = [UIApplication sharedApplication];
     
+    //NSLog(@"Parse inited with %@ %@", strAppId, strClientKey);
+    
     return self;
 }
 
