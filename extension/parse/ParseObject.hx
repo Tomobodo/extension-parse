@@ -94,8 +94,9 @@ class ParseObject {
 				trace(e);
 			}
 			
-			if (mSaveSuccesCallback != null)
+			if (mSaveSuccesCallback != null){
 				mSaveSuccesCallback();
+			}
 		}
 	}
 	
@@ -118,7 +119,8 @@ class ParseObject {
 		for(field in mUpdatedFields) 
 			Reflect.setField(json, field, mData.get(field));
 		
-		return Json.stringify(json);
+		var result = Json.stringify(json);
+		return result;
 	}
 	
 	function emptyUpdate() {
@@ -127,6 +129,10 @@ class ParseObject {
 	}
 	
 	public function save(onSuccessCallback : Void -> Void = null, onFailCallback : String -> Void = null) {
+		
+		mSaveSuccesCallback = onSuccessCallback;
+		mSaveFailCallback = onFailCallback;
+		
 		mRequest.data = getJson();
 		
 		if(mId == null){
@@ -136,12 +142,10 @@ class ParseObject {
 			mRequest.url = mUrl + "/" + mId;
 			mRequest.method = URLRequestMethod.PUT;
 		}
-		
+		trace("Parse sending json : " + mRequest.data);
 		mUrlLoader.load(mRequest);
 		
 		mRequestSuccess = false;
-		mSaveSuccesCallback = onSuccessCallback;
-		mSaveFailCallback = onFailCallback;
 	}
 	
 	public function fetch(onFetchSuccess : Void -> Void, onFetchFail : Void -> Void) {
