@@ -33,7 +33,7 @@ class ParseObject {
 	var mRequestSuccess : Bool = false;
 	
 	var mSaveSuccesCallback : Void->Void;
-	var mSaveFailCallback : Void->Void;
+	var mSaveFailCallback : String->Void;
 	
 	var mOnFetchCallback : Void -> Void;
 	var mOnFetchFailCallback : Void -> Void;
@@ -74,7 +74,7 @@ class ParseObject {
 	function onRequestError(e:ErrorEvent):Void 
 	{
 		if (mSaveFailCallback != null)
-			mSaveFailCallback();
+			mSaveFailCallback(e.text);
 	}
 	
 	function onRequestComplete(e:Event):Void 
@@ -126,7 +126,7 @@ class ParseObject {
 			mUpdatedFields.pop();
 	}
 	
-	public function save(onSuccessCallback : Void -> Void = null, onFailCallback : Void -> Void = null) {
+	public function save(onSuccessCallback : Void -> Void = null, onFailCallback : String -> Void = null) {
 		mRequest.data = getJson();
 		
 		if(mId == null){
