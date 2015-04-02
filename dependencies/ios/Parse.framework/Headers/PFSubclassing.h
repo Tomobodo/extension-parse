@@ -8,6 +8,8 @@
 
 @class PFQuery;
 
+PF_ASSUME_NONNULL_BEGIN
+
 /*!
  If a subclass of <PFObject> conforms to `PFSubclassing` and calls <registerSubclass>,
  Parse framework will be able to use that class as the native class for a Parse cloud object.
@@ -41,7 +43,7 @@
 
  @returns A new <PFObject> without data.
  */
-+ (instancetype)objectWithoutDataWithObjectId:(NSString *)objectId;
++ (instancetype)objectWithoutDataWithObjectId:(PF_NULLABLE NSString *)objectId;
   
 /*!
  @abstract The name of the class as seen in the REST API.
@@ -53,7 +55,7 @@
 
  @discussion A default implementation is provided by <PFObject> which should always be sufficient.
  */
-+ (PFQuery *)query;
++ (PF_NULLABLE PFQuery *)query;
 
 /*!
  @abstract Returns a query for objects of this type with a given predicate.
@@ -66,7 +68,7 @@
 
  @see [PFQuery queryWithClassName:predicate:]
  */
-+ (PFQuery *)queryWithPredicate:(NSPredicate *)predicate;
++ (PF_NULLABLE PFQuery *)queryWithPredicate:(PF_NULLABLE NSPredicate *)predicate;
 
 /*!
  @abstract Lets Parse know this class should be used to instantiate all objects with class type <parseClassName>.
@@ -76,3 +78,5 @@
 + (void)registerSubclass;
 
 @end
+
+PF_ASSUME_NONNULL_END

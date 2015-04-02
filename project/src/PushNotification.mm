@@ -41,7 +41,10 @@
     
     const char * installId = [[currentInstallation objectId] UTF8String];
     
-    parse::registerSuccess(installId);
+    if(installId != NULL)
+        parse::registerSuccess(installId);
+    else
+        parse::registerFail();
 }
 
 -(void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
@@ -51,18 +54,19 @@
 
 -(void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
-    if (application.applicationState == UIApplicationStateInactive)
+    if (application.applicationState == UIApplicationStateBackground) {
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
-    
-    [PFPush handlePush:userInfo];
+        NSLog(@"TRACKED didReceviceNotitification");
+    }
 
 }
 
 -(void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    if (application.applicationState == UIApplicationStateInactive)
+    if (application.applicationState == UIApplicationStateBackground) {
+        completionHandler(UIBackgroundFetchResultNewData);
         [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
-    
-    [PFPush handlePush:userInfo];
+        NSLog(@"TRACKED didReceviceNotitification with ocmpletion handler");
+    }
 }
 
 @end

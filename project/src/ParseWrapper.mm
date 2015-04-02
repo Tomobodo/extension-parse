@@ -45,8 +45,10 @@ NMEAppDelegate * mNMEDelegate;
                 BOOL oldPushHandlerOnly = ![mNMEDelegate respondsToSelector:@selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)];
                 BOOL noPushPayload = ![launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
                 
-                if (preBackgroundPush || oldPushHandlerOnly || noPushPayload)
+                if (preBackgroundPush || oldPushHandlerOnly || noPushPayload){
                     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+                    NSLog(@"TRACKED Opened with notification");
+                }
                 
             }
             

@@ -12,6 +12,8 @@
 #import <ParseOSX/PFObject.h>
 #endif
 
+PF_ASSUME_NONNULL_BEGIN
+
 @class PFQuery;
 
 /*!
@@ -91,7 +93,7 @@
 
  @returns An instance of `PFObject` without data.
  */
-+ (instancetype)objectWithoutDataWithObjectId:(NSString *)objectId;
++ (instancetype)objectWithoutDataWithObjectId:(PF_NULLABLE NSString *)objectId;
 
 /*!
  @abstract Registers an Objective-C class for Parse to use for representing a given Parse class.
@@ -109,7 +111,7 @@
  @discussion This method can only be called on subclasses which conform to <PFSubclassing>.
  A default implementation is provided by <PFObject> which should always be sufficient.
  */
-+ (PFQuery *)query;
++ (PF_NULLABLE PFQuery *)query;
 
 /*!
  @abstract Returns a query for objects of type <parseClassName> with a given predicate.
@@ -123,6 +125,8 @@
 
  @see [PFQuery queryWithClassName:predicate:]
  */
-+ (PFQuery *)queryWithPredicate:(NSPredicate *)predicate;
++ (PF_NULLABLE PFQuery *)queryWithPredicate:(PF_NULLABLE NSPredicate *)predicate;
 
 @end
+
+PF_ASSUME_NONNULL_END
