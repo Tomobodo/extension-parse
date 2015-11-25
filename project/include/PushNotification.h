@@ -12,10 +12,10 @@
 @interface PushNotification : NSObject
 @end
 
-@interface NMEAppDelegate : NSObject <UIApplicationDelegate>
+@interface SDLUIKitDelegate : NSObject <UIApplicationDelegate>
 @end
 
-@interface NMEAppDelegate (PushNotification)
+@interface SDLUIKitDelegate (PushNotification)
 
 @property (nonatomic, retain) id pushNotif;
 

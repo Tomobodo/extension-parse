@@ -21,7 +21,7 @@
 
 @end
 
-@implementation NMEAppDelegate (PushNotification)
+@implementation SDLUIKitDelegate (PushNotification)
 
 @dynamic pushNotif;
 

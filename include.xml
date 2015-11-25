@@ -10,6 +10,7 @@
         <ndll name="parse" />
         <dependency path="dependencies/ios/Bolts.framework" />
         <dependency path="dependencies/ios/Parse.framework" />
+        <dependency name="Social.framework" />
         <dependency name="Accounts.framework" />
         <dependency name="AudioToolbox.framework" />
         <dependency name="CFNetwork.framework" />
