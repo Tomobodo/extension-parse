@@ -20,6 +20,7 @@
         <dependency name="Security.framework" />
         <dependency name="StoreKit.framework" />
         <dependency name="SystemConfiguration.framework" />
+        <dependency name="Social.framework" />
         <dependency name="z" />
         <dependency name="sqlite3" />
 	</section>
