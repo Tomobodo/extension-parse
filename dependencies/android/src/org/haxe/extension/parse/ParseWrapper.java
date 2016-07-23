@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -85,8 +84,6 @@ public class ParseWrapper extends Extension {
 			if(bundle.containsKey("com.parse.Data"))
 				extraData = bundle.getString("com.parse.Data");
 		}
-		
-		ParseAnalytics.trackAppOpenedInBackground(intent);
 	}
 	
 }
