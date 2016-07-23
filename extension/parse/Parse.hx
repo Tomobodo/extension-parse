@@ -12,26 +12,21 @@ import cpp.Lib;
 class Parse {
 	
 	public static var applicationId(get, null) : String = "";
-	public static var RESTApiKey(get, null) : String = "";
-	public static var clientKey(get, null) : String = "";
-	
-	static inline var API_VERSION : Int = 1;
-	static inline var PARSE_REST_API : String = "https://api.parse.com";
-	
+	public static var serverURL(get,null) :String = "";
+		
 	public static function initialize() {
 		Parse.applicationId = ParseMacro.getProjectEnv("Parse_AppId");
-		Parse.clientKey = ParseMacro.getProjectEnv("Parse_clientKey");
-		Parse.RESTApiKey = ParseMacro.getProjectEnv("Parse_RESTApiKey");
-		
+		Parse.serverURL = ParseMacro.getProjectEnv("Parse_url");
+
 		#if android
 		jni_initialize(ParsePush);
 		#elseif ios
-		objC_initialize(applicationId, clientKey);
+		objC_initialize(applicationId);
 		#end
 	}
 	
 	public static function getApiUrl() : String {
-		return PARSE_REST_API + "/" + API_VERSION ;
+		return Parse.serverURL;
 	}
 	
 	public static function prepareRESTRequest(type : String, otherParameter : String = null) : URLRequest {
@@ -45,8 +40,8 @@ class Parse {
 		
 		var request = new URLRequest(url);
 		var appId = new URLRequestHeader("X-Parse-Application-Id", Parse.applicationId);
-		var appApiKey = new URLRequestHeader("X-Parse-REST-API-Key", Parse.RESTApiKey);
-		request.requestHeaders = [appId, appApiKey];
+		
+		request.requestHeaders = [appId];
 		request.contentType = "application/json";
 		
 		return request;
@@ -70,16 +65,11 @@ class Parse {
 		return applicationId;
 	}
 	
-	static function get_RESTApiKey():String 
+	static function get_serverURL():String
 	{
-		return RESTApiKey;
+		return serverURL;
 	}
-	
-	static function get_clientKey() : String
-	{
-		return clientKey;
-	}
-	
+
 	#if android
 	
 	static var jni_initialize = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "initialize", "(Lorg/haxe/lime/HaxeObject;)V");

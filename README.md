@@ -21,10 +21,15 @@ Add the lib :
 
 Add your Parse keys :
 ```
-<setenv name="Parse_clientKey"	value="YOUR_CLIENT_KEY" />
+<setenv name="Parse_url"	value="YOUR_CLIENT_KEY" />
 <setenv name="Parse_AppId"	value="YOUR_APP_ID" />
-<setenv name="Parse_RESTApiKey" value="YOUR_REST_API_KEY" />
 ```
+
+added for open source parse-server GCM push notification
+```
+<setenv name="GCM_SENDER_ID" value="YOUR_GCM_SENDER_ID" />
+```
+
 If you don't add them, your app will not compile and tell you wich key is missing.
 
 ### Sample

@@ -3,7 +3,7 @@ package org.haxe.extension.parse;
 import android.content.Context;
 import android.content.Intent;
 
-import com.parse.ParseAnalytics;
+//import com.parse.ParseAnalytics;
 import com.parse.ParsePushBroadcastReceiver;
 
 public class ParseReceiver extends ParsePushBroadcastReceiver{
@@ -12,7 +12,7 @@ public class ParseReceiver extends ParsePushBroadcastReceiver{
 	protected void onPushOpen(Context arg0, Intent intent) {
 		// TODO Auto-generated method stub
 		super.onPushOpen(arg0, intent);
-		ParseAnalytics.trackAppOpenedInBackground(intent);
+		//ParseAnalytics.trackAppOpenedInBackground(intent);
 	}
 	
 }
