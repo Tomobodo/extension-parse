@@ -21,7 +21,7 @@ Add the lib :
 
 Add your Parse keys :
 ```
-<setenv name="Parse_url"	value="YOUR_CLIENT_KEY" />
+<setenv name="Parse_url"	value="YOUR_PARSE_URL" />
 <setenv name="Parse_AppId"	value="YOUR_APP_ID" />
 ```
 
