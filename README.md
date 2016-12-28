@@ -1,6 +1,6 @@
 # Parse 
 
-Provide acces to Parse from OpenFL.
+Provide acces to Parse from OpenFL / NME
 
 ## Usage
 
