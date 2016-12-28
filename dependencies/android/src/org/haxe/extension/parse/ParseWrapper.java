@@ -49,6 +49,10 @@ public class ParseWrapper extends Extension {
 	public static void initialize(HaxeObject HaxeParse){
 		mHaxeParse = HaxeParse;
 	}
+
+	public static String getExtraData(){
+		return extraData;
+	}
 	
 	public static void subscribe() {
 		ParsePush.subscribeInBackground("global", new SaveCallback() {
