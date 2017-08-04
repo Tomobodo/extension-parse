@@ -2,9 +2,12 @@
 <project>
 	
 	<!-- Use the following for an Android Java extension, not needed otherwise -->
-	
-	<dependency name="parse" path="dependencies/android" if="android" />
-	<android extension="org.haxe.extension.parse.ParseWrapper" />
+	<section if="android">
+        <haxelib name="extension_bolts" />	
+    	<dependency name="parse" path="dependencies/android" if="android" />
+    	<android extension="org.haxe.extension.parse.ParseWrapper" />
+        <template path="templates/android/template/AndroidManifest.xml" rename="../AndroidManifest.xml" if="android" />
+    </section>
 
     <section if="ios">
         <ndll name="parse" />
@@ -25,6 +28,6 @@
         <dependency name="sqlite3" />
 	</section>
     
-	<template path="templates" />
+   
 	
 </project>

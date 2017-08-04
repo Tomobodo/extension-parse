@@ -53,7 +53,7 @@ class Parse {
 		
 		#if android
 		
-		data = jni_extraData.get();
+		data = jni_getExtraData();
 		
 		#end
 		
@@ -73,7 +73,7 @@ class Parse {
 	#if android
 	
 	static var jni_initialize = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "initialize", "(Lorg/haxe/lime/HaxeObject;)V");
-	static var jni_extraData = JNI.createStaticField("org.haxe.extension.parse.ParseWrapper", "extraData", "Ljava/lang/String;");
+	static var jni_getExtraData = JNI.createStaticMethod("org.haxe.extension.parse.ParseWrapper", "getExtraData", "()Ljava/lang/String;");
 	
 	#elseif ios
 

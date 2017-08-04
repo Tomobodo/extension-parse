@@ -28,8 +28,14 @@ class ParseMacro
 			var directoryToRead = "./";
 		#end
 
+		#if nme
+			var fileExtension = "nmml";
+		#else
+			var fileExtension = "xml";
+		#end
+
 		for (file in FileSystem.readDirectory(directoryToRead))
-			if (Path.extension(file) == "xml"){
+			if (Path.extension(file) == fileExtension){
 				var xmlData : Xml = Xml.parse(File.getContent(directoryToRead + file));
 				for (elements in xmlData.elements())
 					if (elements.nodeName == "project") {

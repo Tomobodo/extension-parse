@@ -13,7 +13,7 @@
     android:name="::APP_PACKAGE::.permission.C2D_MESSAGE" />
 	<uses-permission android:name="::APP_PACKAGE::.permission.C2D_MESSAGE" />
 	
-	<application>
+	<application android:name="org.haxe.extension.parse.ParseApp" android:label="::APP_TITLE::"	>
 		
 		<service android:name="com.parse.PushService" />
 		
@@ -45,7 +45,7 @@
 		</receiver>
 		
 		<meta-data android:name="com.parse.push.gcm_sender_id"
-  			android:value="id:::ENV_GCM_SENDER_ID::" />
+  			android:value="id:::GCM_SENDER_ID::" />
 	</application>
 	
 </manifest>

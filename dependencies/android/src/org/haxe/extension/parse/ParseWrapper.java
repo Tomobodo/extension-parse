@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -49,6 +50,10 @@ public class ParseWrapper extends Extension {
 	public static void initialize(HaxeObject HaxeParse){
 		mHaxeParse = HaxeParse;
 	}
+
+	public static String getExtraData(){
+		return extraData;
+	}
 	
 	public static void subscribe() {
 		ParsePush.subscribeInBackground("global", new SaveCallback() {
@@ -76,6 +81,13 @@ public class ParseWrapper extends Extension {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+
+		// Parse.initialize(new Parse.Configuration.Builder(Extension.mainContext)
+		//     .applicationId("::Parse_AppId::")
+		//     .clientKey(null)
+		//     .server("::Parse_url::") // The trailing slash is important.
+		//     .build()
+		// );
 		
 		Intent intent = mainActivity.getIntent();
 		Bundle bundle = intent.getExtras();
